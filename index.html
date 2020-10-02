@@ -9,6 +9,117 @@
 
       gtag('config', 'UA-177858350-1');
     </script>
+    
+    
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+    <script>
+    Highcharts.getJSON('https://demo-live-data.highcharts.com/aapl-v.json', function (data) {
+
+        Highcharts.stockChart('container', {
+
+            title: {
+                text: undefined
+            },
+            scrollbar: {
+                enabled: false
+            },
+            credits: false,
+
+            // https://api.highcharts.com/highstock/rangeSelector
+            rangeSelector: {
+                selected: 2,
+
+                buttons: [{
+                  type: 'month',
+                  count: 1,
+                  text: '1 min'
+                }, {
+                  type: 'month',
+                  count: 3,
+                  text: '3 min'
+                }, {
+                  type: 'month',
+                  count: 6,
+                  text: '6 min'
+                }, {
+                  // https://api.highcharts.com/highstock/rangeSelector.buttons.type
+                  type: '1',
+                  count: 1,
+                  text: '1 hour'
+                }, {
+                  type: 'all',
+                  text: 'All'
+                }],
+
+                // taken from here: https://jsfiddle.net/7tdj5b29/2/
+                inputDateFormat: '%H:%M:%S',
+                inputEditDateFormat: '%H:%M:%S',
+                // Custom parser to parse the %H:%M:%S format
+                inputDateParser: function (value) {
+                    value = value.split(/[:\.]/);
+                    return Date.UTC(
+                        1970,
+                        0,
+                        1,
+                        parseInt(value[0], 10),
+                        parseInt(value[1], 10),
+                        parseInt(value[2], 10)
+                    );
+                }
+            },
+
+            // https://api.highcharts.com/highstock/navigator
+            navigator: {
+                series: {
+                    type: 'column',
+                    pointRange: null,
+                    dataGrouping: {
+                        groupPixelWidth: 10
+                    }
+                },
+
+                xAxis : {
+                  labels: {
+                    enabled: false
+                  }
+                },
+            },
+
+
+            xAxis: {
+              events: {
+                // get dates for slider bounds
+                afterSetExtremes: function(e) {
+                  console.log(e.min);
+                  console.log(e.max);
+                }
+              },
+              lineWidth: 0,
+              tickLength: 0,
+              labels: {
+                enabled: false
+              }
+            },
+
+            yAxis: {
+              height: 0,
+              gridLineWidth: 0,
+              labels: {
+                enabled: false
+              }
+            },
+
+
+            series: [{
+                type: 'column',
+                name: 'AAPL Stock Volume',
+                data: data,
+                enabled: false
+            }]
+        });
+    });
+    </script>
   </head>
   <body>
 
@@ -24,6 +135,13 @@ This gif showcases the timeline & the zoomline (which corresponds to the window 
 <br />
 <br />
 <img src="https://s1.gifyu.com/images/timeline.gif"/>
+
+<br />
+<br />
+<br />
+Here is an interactive widget showing how the window could behave on the timeline - with a histogram visualizing the comments over the entire episode:
+<br />
+<div id="container" style="height: 90px"></div>
 
 <br />
 <br />
